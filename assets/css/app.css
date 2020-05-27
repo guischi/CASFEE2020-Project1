@@ -18,3 +18,12 @@ header {
 filter {
     display: inline;
 }
+
+addnote {
+    display:none;
+}
+
+.img-flash {
+    width:30px;
+    cursor: pointer;
+}
