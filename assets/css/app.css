@@ -1,0 +1,20 @@
+body {
+    background-color: blanchedalmond;
+    display: flex;
+    justify-content: center;
+}
+
+main {
+    width: 1024px;
+    border: solid 1px red;
+    
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
+filter {
+    display: inline;
+}
