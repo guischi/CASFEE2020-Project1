@@ -1,0 +1,26 @@
+body {
+    background-color: floralwhite;
+    display: flex;
+    justify-content: center;
+}
+
+main {
+    width: 1024px;
+    border: solid 1px red;
+    
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
+filter {
+    display: inline;
+}
+
+
+.img-flash {
+    width:30px;
+    cursor: pointer;
+}

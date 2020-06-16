@@ -1,0 +1,24 @@
+{
+  "name": "casfee2020-project-notes",
+  "version": "1.0.0",
+  "description": "Project 1 for CASFEE 2020 at HSR | copyright 2020 Guido Schilliger",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --experimental-modules --es-module-specifier-resolution=node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guischi/CASFEE2020-Project1.git"
+  },
+  "author": "Guido Schilliger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guischi/CASFEE2020-Project1/issues"
+  },
+  "homepage": "https://github.com/guischi/CASFEE2020-Project1#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
