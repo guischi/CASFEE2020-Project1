@@ -24,3 +24,27 @@ filter {
     width:30px;
     cursor: pointer;
 }
+
+darkener {
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height: 100%;
+    background-color: hsla(0, 0%, 0%, 0.3);
+    display: none;
+}
+
+addnote {
+    position: absolute;
+    top:30px;
+    left: 0 auto;
+    z-index: 20;
+    width: 300px;
+    background-color: hsla(61, 100%, 91%, 1);
+    display: none;
+}
+
+.show {
+    display:block;
+}

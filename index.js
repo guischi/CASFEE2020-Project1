@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import bodyParser from 'body-parser';
 
 import {rtIndex} from './routes/index';
 import {rtNotes} from './routes/notes';
@@ -12,6 +13,9 @@ app.use(express.static(path.resolve('public')));
 app.get("/", function(req, res){
     res.sendFile("/index.html",  {root: __dirname + '/public/'});
 });
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use("/", rtIndex);
 app.use("/notes", rtNotes);
