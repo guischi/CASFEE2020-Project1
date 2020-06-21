@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CASFEE 2020 Project 1 | Notes App</title>
+    <link rel="stylesheet" href="./assets/css/app.css" />
+
+    <script src="./assets/js/notes-controller.js" type="module" defer></script>
+</head>
+    <body>
+            
+        <addnote>
+            <addnoteform>
+                <div>
+                    <label for="lbl-title">Titel</label>
+                </div>
+                <div>
+                    <input type="text" id="txt-title" />
+                </div>
+                <div>
+                    <label for="lbl-description">Beschreibung</label>
+                </div>
+                <div>
+                    <textarea id="txt-description"></textarea>
+                </div>
+                <div>
+                    <label for="lbl-importance">Wichtigkeit</label>
+                </div>
+                <div>
+                    (importance)
+                </div>
+                <div>
+                    <label for="lbl-due-date">Erledigen bis</label>
+                </div>
+                <div>
+                    <input type="date" id="dat-due-date" />
+                </div>
+                <div>
+                    <button id="btn-save-note">Speichern</button>
+                </div>
+                <div>
+                    <button id="btn-cancel">Abbrechen</button>
+                </div>
+            </addnoteform>
+        </addnote>
+    </body>
+</html>

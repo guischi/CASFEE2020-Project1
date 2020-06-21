@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CASFEE 2020 Project 1 | Notes App</title>
+    <link rel="stylesheet" href="./assets/css/app.css" />
+
+    <script src="./assets/js/ext/jquery.min.js" defer></script>
+    <script src="./assets/js/ext/handlebars.min.js"></script>
+    <script src="./assets/js/index-controller.js" type="module" defer></script>
+    
+    <script id="note-template" type="text/x-handlebars-template">
+        <note>
+            <div class="due-date">{{duedate}}</div>
+            <div class="note-title">{{title}}</div>
+            <div class="importance">
+                <img src="assets/img/flash-on.png" class="img-flash" id="note-importance-1" data-id="1" />
+                <img src="assets/img/flash-on.png" class="img-flash" id="note-importance-2" data-id="2" />
+                <img src="assets/img/flash-on.png" class="img-flash" id="note-importance-3" data-id="3" />
+                <img src="assets/img/flash-off.png" class="img-flash" id="note-importance-4" data-id="4" />
+                <img src="assets/img/flash-off.png" class="img-flash" id="note-importance-5" data-id="5" />
+            </div>
+            <div class="note-edit">
+                <input type="button" id="btn-edit-note-1" value="Edit" />
+            </div>
+
+            <div class="finished">
+                <input type="checkbox" id="chk-finished-1" value="1" />
+                <label for="chk-finished-1">Finished [Today]</label>
+            </div>
+            <div class="description">
+                <textarea id="txt-description-1">{{description}}</textarea>
+            </div>
+        </note>
+    </script>
+
+    <script>
+        
+    </script>
+</head>
+    <body>
+        <main>
+            <header>
+                <div>
+                    <input type="button" id="btn-new-note" value="Neue Notiz">
+                </div>
+                <div>
+                    <select id="sel-theme">
+                        <option value="0">Bright Theme</option>
+                        <option value="1">Dark Theme</option>
+                    </select>
+                </div>
+            </header>
+                
+            <filter>
+                <div class="btn-filter">
+                    <input type="button" id="btn-filter-finished" value="By finished date" />
+                
+                    <input type="button" id="btn-filter-created" value="By created date" />
+            
+                    <input type="button" id="btn-filter-importance" value="By importance" />
+                </div>
+            </filter>
+
+            <notes>
+                
+            </notes>
+        </main> 
+
+        <darkener></darkener>
+
+        <addnote>
+            <addnoteform>
+                <div>
+                    <label for="lbl-title">Titel</label>
+                </div>
+                <div>
+                    <input type="text" id="txt-title" name="title" />
+                </div>
+                <div>
+                    <label for="lbl-description">Beschreibung</label>
+                </div>
+                <div>
+                    <textarea id="txt-description" name="description"></textarea>
+                </div>
+                <div>
+                    <label for="lbl-importance">Wichtigkeit</label>
+                </div>
+                <div class="importance">
+                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-1" data-id="1" />
+                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-2" data-id="2" />
+                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-3" data-id="3" />
+                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-4" data-id="4" />
+                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-5" data-id="5" />
+                </div>
+                <div>
+                    <label for="lbl-due-date">Erledigen bis</label>
+                </div>
+                <div>
+                    <input type="date" id="dat-due-date" name="duedate" />
+                </div>
+                <div>
+                    <button id="btn-save-note">Speichern</button>
+                </div>
+                <div>
+                    <button id="btn-cancel">Abbrechen</button>
+                </div>
+            </addnoteform>
+        </addnote>
+        
+    </body>
+</html>
