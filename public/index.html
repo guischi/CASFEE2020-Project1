@@ -11,28 +11,26 @@
     <script src="./assets/js/index-controller.js" type="module" defer></script>
     
     <script id="note-template" type="text/x-handlebars-template">
-        <note>
-            <div class="due-date">{{duedate}}</div>
-            <div class="note-title">{{title}}</div>
-            <div class="importance">
-                <img src="assets/img/flash-on.png" class="img-flash" id="note-importance-1" data-id="1" />
-                <img src="assets/img/flash-on.png" class="img-flash" id="note-importance-2" data-id="2" />
-                <img src="assets/img/flash-on.png" class="img-flash" id="note-importance-3" data-id="3" />
-                <img src="assets/img/flash-off.png" class="img-flash" id="note-importance-4" data-id="4" />
-                <img src="assets/img/flash-off.png" class="img-flash" id="note-importance-5" data-id="5" />
-            </div>
-            <div class="note-edit">
-                <input type="button" id="btn-edit-note-1" value="Edit" />
-            </div>
+        {{#each notes}}  
+            <note>
+                <div class="due-date">{{this.dueDate}}</div>
+                <div class="note-title">{{this.title}}<br>Created: {{this.noteDate}}</div>
+                <div class="importance" data-id="{{this._id}}">
+                    {{#renderImportance this.importance}}
+                    {{/renderImportance}}
+                </div>
+                <div class="note-edit">
+                    <input type="button" class="btn-edit" data-id="{{this._id}}" value="Edit" />
+                </div>
 
-            <div class="finished">
-                <input type="checkbox" id="chk-finished-1" value="1" />
-                <label for="chk-finished-1">Finished [Today]</label>
-            </div>
-            <div class="description">
-                <textarea id="txt-description-1">{{description}}</textarea>
-            </div>
-        </note>
+                <div class="finished">                    
+                    <label><input type="checkbox" class="chk-finished" data-id="{{this._id}}" value="1" /> Finished [{{this.finishDate}}]</label>
+                </div>
+                <div class="description">
+                    <textarea id="txt-description-{{this._id}}">{{this.description}}</textarea>
+                </div>
+            </note>
+        {{/each}}
     </script>
 
     <script>
@@ -55,7 +53,7 @@
                 
             <filter>
                 <div class="btn-filter">
-                    <input type="button" id="btn-filter-finished" value="By finished date" />
+                    <input type="button" id="btn-filter-duedate" value="By due date&#x2193;" />
                 
                     <input type="button" id="btn-filter-created" value="By created date" />
             

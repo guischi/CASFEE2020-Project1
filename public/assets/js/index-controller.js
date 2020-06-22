@@ -22,7 +22,7 @@ for(const f of btn) {
 const btnAdd = document.querySelector("#btn-new-note");
 btnAdd.addEventListener("click", () => { 
     showAddNoteForm();
- });
+});
 
 const btnCancel = document.querySelector("#btn-cancel");
 btnCancel.addEventListener("click", () => { 
@@ -52,17 +52,69 @@ btnSave.addEventListener("click", () => {
         description: valDescription        
     }, function(data) {
         console.log(data);
+        showAddNoteForm();
+        loadNotes();
     });
 });
 
-var noteTemplate = document.querySelector('#note-template').innerHTML;
+const btnSortByDuedate = document.querySelector("#btn-filter-duedate");
+btnSortByDuedate.addEventListener("click", () => { 
+    setSortOrder("dueDate", "up");
+    loadNotes();
+ });
 
-var comp = Handlebars.compile(noteTemplate);
+const btnSortByCreatedate = document.querySelector("#btn-filter-created");
+btnSortByCreatedate.addEventListener("click", () => { 
+    setSortOrder("noteDate", "up");
+    loadNotes();
+ });
 
-var noteData = comp({
-    duedate: new Date(),
-    title: "test",
-    description: "blablablabla"    
+const btnSortByImportance = document.querySelector("#btn-filter-importance");
+btnSortByImportance.addEventListener("click", () => { 
+    setSortOrder("importance", "dn");
+    loadNotes();
+ });
+
+function loadNotes() {
+    const noteTemplate = document.querySelector('#note-template').innerHTML;
+    const render = Handlebars.compile(noteTemplate);
+
+    $.get("/notes?sort="+sortBy+"&direction="+sortDirection, function(data) {
+        
+        const notes = [];
+        for(const note of data) {
+            notes.push(note);        
+        }
+        
+        const dt = { "notes":  notes };
+        const noteData = render(dt);
+        
+        document.querySelector('notes').innerHTML = "";
+        document.querySelector('notes').innerHTML += noteData;
+    });
+}
+
+Handlebars.registerHelper('renderImportance', (importance) => {
+    let result = '';
+    for (let i = 1; i <= 5; i++) {
+      let on = importance >= i ? 'on' : 'off';
+      result += `<img src="assets/img/flash-${on}.png" class="img-flash" data-id="${i}" />`;
+    }
+    return new Handlebars.SafeString(result);
 });
+  
+let sortBy = "duedate";
+let sortDirection = "dn";
+function setSortOrder(sort, dir) {
+    if(sort == sortBy) {
+        sortDirection = sortDirection == "dn" ? "up" : "dn";
+    } else {
+        sortBy = sort;
+        sortDirection = dir;
+    }
+}
 
-document.querySelector('notes').innerHTML += noteData;
+document.addEventListener("DOMContentLoaded", function(event) {
+    console.log("DOM fully loaded and parsed");
+    loadNotes();
+});
