@@ -1,6 +1,8 @@
+import Datastore from 'nedb';
+const db = new Datastore({ filename: './data/notes.db', autoload: true });
+
 class Note{
-    constructor(id, title, dueDate, importance, description){
-        this.id = id;
+    constructor(title, dueDate, importance, description){
         this.title = title;
         this.dueDate = dueDate;
         this.importance = importance;
@@ -11,17 +13,21 @@ class Note{
     }
 }
 
-
 class NotesService {
-    constructor() {
-        this.notes = [];
-    }
 
-    add(title, dueDate, importance, description) {
-        let note = new Note(this.notes.length, title, dueDate, importance, description);
-        this.notes.push(note);
-        console.log(this.notes);
-        return note;
+    add(title, dueDate, importance, description, fnCallback) {
+        let due = '';
+        if(dueDate != '') {
+            due = new Date(dueDate);
+        }
+        let note = new Note(title, due, importance, description);
+
+        db.insert(note, function(err, newDoc){
+            console.log("Insert new note into db: " + title, due, importance, description);
+            if(fnCallback){
+                fnCallback(err, newDoc);
+            }
+        });
     }
 
     delete(id) {
@@ -33,12 +39,14 @@ class NotesService {
         return note;
     }
 
-    get(id) {
+    /*get(id) {
         return this.notes[id];
-    }
+    }*/
 
-    all() {
-        return this.notes;
+    all(fnCallback) {
+        db.find({}, function (err, docs) {
+            fnCallback(err, docs);
+        });       
     }
 }
 
