@@ -11,7 +11,7 @@ class NotesController {
     }
 
     async addNote(req, res) {
-        res.json(await notesService.add(req.body.title, req.body.duedate, req.body.importance, req.body.description));        
+        res.json(await notesService.add(req.body));        
     }
 
     async editNote(req, res) {

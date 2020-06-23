@@ -6,9 +6,9 @@ class Note{
         this.title = title;        
         this.importance = importance;
         this.description = description;
-        this.finished = false;
+        this.finished = 'false';
         this.dueDate = dueDate;
-        this.finishDate = new Date('2999-12-31');        
+        this.finishDate = new Date('2999-12-31').toISOString();        
         this.state = "OK";
     }
 
@@ -18,12 +18,11 @@ class Note{
 }
 
 class NotesService {
-    async add(title, dueDate, importance, description) {
-        let due = '';
-        if(dueDate != '') {
-            due = new Date(dueDate);
-        }
-        let note = new Note(title, due, importance, description);
+    async add(payload) {
+        payload.dueDate = new Date(payload.dueDate);
+        if(payload.dueDate == "Invalid Date") payload.dueDate = new Date("2999-12-31");
+
+        let note = new Note(payload.title, payload.dueDate, payload.importance, payload.description);
         note.setCreateDate(new Date());
 
         return await db.insert(note);        

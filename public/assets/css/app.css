@@ -1,30 +1,88 @@
+:root {
+    /* Light mode */
+    --light-text: #222430;
+    --light-bg: #f1efc9;
+  
+    /* Dark mode */
+    --dark-text: #f7f7f7;
+    --dark-bg: #1b262c;
+
+    /* Default mode */
+    --text-color: var(--light-text);
+    --bg-color: var(--light-bg);
+}
+
+#theme-switch {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+label[for="theme-switch"] {
+    cursor: pointer;
+}
+
 body {
-    background-color: floralwhite;
+    background: var(--bg-color);
+    color: var(--text-color);
     display: flex;
     justify-content: center;
+    margin:0;
+    font-family: Kreon;
+}
+
+a {
+    color: var(--text-color);
 }
 
 main {
     width: 1024px;
-    border: solid 1px red;
-    
+    /* border: solid 1px red; */
+    margin:40px;
 }
 
 header {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 40px;
 }
 
 filter {
     display: inline;
 }
 
-
+.btn-filter {
+    margin-bottom: 30px;
+    border-bottom: solid 1px #68686869;
+}
 .img-flash {
     width:30px;    
 }
 
 .pointer {
+    cursor: pointer;
+}
+
+note {
+    display:block;
+    margin-bottom: 20px;
+    padding: 10px;
+    background:hsla(0, 0%, 100%, 0.3);
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.4);
+}
+
+input[type="text"], textarea {
+    border: 0;
+    padding:4px;
+    width:100%;
+}
+
+input[type="button"], button {
+    border:none;
+    padding:10px;
+    min-width: 100px;
     cursor: pointer;
 }
 
@@ -34,20 +92,61 @@ darkener {
     left:0;
     width:100%;
     height: 100%;
-    background-color: hsla(0, 0%, 0%, 0.3);
+    background-color: hsla(0, 0%, 0%, 0.7);
     display: none;
 }
 
 addnote {
     position: absolute;
-    top:30px;
+    top:20vh;
     left: 0 auto;
     z-index: 20;
-    width: 300px;
-    background-color: hsla(61, 100%, 91%, 1);
+    width: 40%;
+    min-width:400px;
+    padding:20px;
     display: none;
+    background: var(--bg-color);
+    box-shadow: 0 40px 80px 0 rgba(0, 0, 0, 0.8);
+}
+
+#addform {
+    width:100%;
+    display: flex;
+    margin-bottom: 20px;
+}
+#addform > div {
+    width:50%;
+    padding-right:20px;
+}
+#addform > div > div {
+    padding: 2px;
+}
+#addform-buttons {
+    width:100%;
+    text-align: center;
+}
+
+.green {
+    background: rgb(46, 148, 122);
+    color: var(--dark-text);
+}
+
+.blue {
+    background: rgb(55, 151, 216);
+    color: var(--dark-text);
+    box-shadow: 0 -2px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.red {
+    background: rgb(216, 79, 55);
+    color: var(--dark-text);
 }
 
 .show {
     display:block;
+}
+
+.dark {
+    background: var(--dark-bg);
+    color: var(--dark-text);
 }
