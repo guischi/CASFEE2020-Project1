@@ -21,7 +21,10 @@ filter {
 
 
 .img-flash {
-    width:30px;
+    width:30px;    
+}
+
+.pointer {
     cursor: pointer;
 }
 

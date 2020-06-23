@@ -1,52 +1,46 @@
-import Datastore from 'nedb';
-const db = new Datastore({ filename: './data/notes.db', autoload: true });
+import datastore from 'nedb-promise';
+const db = new datastore({ filename: './data/notes.db', autoload: true });
 
 class Note{
     constructor(title, dueDate, importance, description){
-        this.title = title;
-        this.dueDate = dueDate;
+        this.title = title;        
         this.importance = importance;
         this.description = description;
-        this.noteDate = new Date();
-        this.finishDate = new Date();
+        this.finished = false;
+        this.dueDate = dueDate;
+        this.finishDate = new Date('2999-12-31');        
         this.state = "OK";
+    }
+
+    setCreateDate(date) {
+        this.createDate = date;
     }
 }
 
 class NotesService {
-
-    add(title, dueDate, importance, description, fnCallback) {
+    async add(title, dueDate, importance, description) {
         let due = '';
         if(dueDate != '') {
             due = new Date(dueDate);
         }
         let note = new Note(title, due, importance, description);
+        note.setCreateDate(new Date());
 
-        db.insert(note, function(err, newDoc){
-            console.log("Insert new note into db: " + title, due, importance, description);
-            if(fnCallback){
-                fnCallback(err, newDoc);
-            }
-        });
+        return await db.insert(note);        
     }
 
-    delete(id) {
-        let note = this.get(id);
-        if(note)
-        {
-            note.state = "DELETED";
-        }
-        return note;
+    async edit(id, payload) {
+        payload.dueDate = new Date(payload.dueDate);
+        if(payload.dueDate == "Invalid Date") payload.dueDate = new Date("2999-12-31");
+        return await db.update({ _id: id }, { $set: payload }, {});
     }
 
-    /*get(id) {
-        return this.notes[id];
-    }*/
+    async all(sort, dir) {
+        return await db.cfind({}).sort({ [sort]: dir }).exec();       
+    }
 
-    all(fnCallback) {
-        db.find({}, function (err, docs) {
-            fnCallback(err, docs);
-        });       
+    async one(id) {
+        return await db.findOne({ _id: id });       
     }
 }
 

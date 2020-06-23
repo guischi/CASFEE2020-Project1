@@ -1,36 +1,33 @@
-const btn = document.querySelectorAll(".img-flash");
+let editMode = false;
+
 let importance = 0;
-const setImportance = (e) => {
+function setImportance(rating) {
     for(let i=1;i<=5;i++) {
-        if(i<=e.target.dataset.id) {
-            document.querySelector("#new-importance-"+i).src = "./assets/img/flash-on.png";
+        if(i<=rating) {
+            document.querySelector("#importance-"+i).src = "./assets/img/flash-on.png";
         } else {
-            document.querySelector("#new-importance-"+i).src = "./assets/img/flash-off.png";
+            document.querySelector("#importance-"+i).src = "./assets/img/flash-off.png";
         }
     }
-    importance = e.target.dataset.id;
-};
-
-const getImportance = () => {
-    return importance;
-};
-
-for(const f of btn) {
-    f.addEventListener("click", setImportance); 
+    importance = rating;
 }
 
-const btnAdd = document.querySelector("#btn-new-note");
-btnAdd.addEventListener("click", () => { 
+document.querySelectorAll(".img-flash").forEach(flash => 
+    flash.addEventListener("click", (e) => {
+        setImportance(e.target.dataset.id);
+    })
+);
+
+document.querySelector("#btn-new-note").addEventListener("click", () => { 
+    editMode = false;
     showAddNoteForm();
 });
 
-const btnCancel = document.querySelector("#btn-cancel");
-btnCancel.addEventListener("click", () => { 
+document.querySelector("#btn-cancel").addEventListener("click", () => { 
     showAddNoteForm();
 });
 
-const divDarkener = document.querySelector("darkener");
-divDarkener.addEventListener("click", () => { 
+document.querySelector("darkener").addEventListener("click", () => { 
     showAddNoteForm();
 });
 
@@ -39,41 +36,83 @@ function showAddNoteForm() {
     document.querySelector("addnote").classList.toggle("show");
 }
 
-const btnSave = document.querySelector("#btn-save-note");
-btnSave.addEventListener("click", () => {
+document.querySelector("#btn-save-note").addEventListener("click", () => {    
+    saveNote();
+});
+
+function saveNote() {
     let valTitle = document.querySelector('input[name="title"]').value;
     let valDescription = document.querySelector('textarea[name="description"]').value;
     let valDueDate = document.querySelector('input[name="duedate"]').value;
-    
-    $.post("/notes", {
-        title: valTitle,
-        duedate: valDueDate,
-        importance: getImportance,
-        description: valDescription        
-    }, function(data) {
-        console.log(data);
-        showAddNoteForm();
-        loadNotes();
-    });
+
+    if(!editMode) {
+        $.post("/notes", {
+            title: valTitle,
+            dueDate: valDueDate,
+            importance: importance,
+            description: valDescription        
+        }, function(data) {
+            console.log(data);
+            showAddNoteForm();
+            loadNotes();
+        });
+    } else {
+        let id = document.querySelector('input[name="id"]').value;
+        $.post("/notes/"+id, {
+            title: valTitle,
+            dueDate: valDueDate,
+            importance: importance,
+            description: valDescription        
+        }, function(data) {
+            console.log(data);
+            showAddNoteForm();
+            loadNotes();
+        });
+    }  
+}
+
+document.querySelector("#btn-filter-duedate").addEventListener("click", () => { 
+    setSortOrder("dueDate", 1);
+    loadNotes();
 });
 
-const btnSortByDuedate = document.querySelector("#btn-filter-duedate");
-btnSortByDuedate.addEventListener("click", () => { 
-    setSortOrder("dueDate", "up");
+document.querySelector("#btn-filter-created").addEventListener("click", () => { 
+    setSortOrder("createDate", 1);
     loadNotes();
- });
+});
 
-const btnSortByCreatedate = document.querySelector("#btn-filter-created");
-btnSortByCreatedate.addEventListener("click", () => { 
-    setSortOrder("noteDate", "up");
+document.querySelector("#btn-filter-importance").addEventListener("click", () => { 
+    setSortOrder("importance", -1);
     loadNotes();
- });
+});
 
-const btnSortByImportance = document.querySelector("#btn-filter-importance");
-btnSortByImportance.addEventListener("click", () => { 
-    setSortOrder("importance", "dn");
-    loadNotes();
- });
+function initNotesUI() {
+    document.querySelectorAll(".btn-edit").forEach(btnEdit => 
+        btnEdit.addEventListener("click", (e) => {
+            getOneNote(e.target.dataset.id);
+        })
+    );
+}
+
+ function getOneNote(id) {
+    $.get("/notes/"+id, function(data) {
+        document.querySelector('input[name="id"]').value = id;
+        document.querySelector("#txt-title").value = data.title;
+        document.querySelector("#txt-description").value = data.description;
+        document.querySelector("#dat-due-date").value = data.dueDate.split("T")[0];
+        for(let i=1;i<=5;i++) {
+            if(i<=data.importance) {
+                document.querySelector("#importance-"+i).src = "./assets/img/flash-on.png";
+            } else {
+                document.querySelector("#importance-"+i).src = "./assets/img/flash-off.png";
+            }
+        }
+        importance = data.importance;
+        editMode = true;
+        showAddNoteForm();
+    });
+ }
+
 
 function loadNotes() {
     const noteTemplate = document.querySelector('#note-template').innerHTML;
@@ -91,6 +130,8 @@ function loadNotes() {
         
         document.querySelector('notes').innerHTML = "";
         document.querySelector('notes').innerHTML += noteData;
+
+        initNotesUI();
     });
 }
 
@@ -98,16 +139,16 @@ Handlebars.registerHelper('renderImportance', (importance) => {
     let result = '';
     for (let i = 1; i <= 5; i++) {
       let on = importance >= i ? 'on' : 'off';
-      result += `<img src="assets/img/flash-${on}.png" class="img-flash" data-id="${i}" />`;
+      result += `<img src="assets/img/flash-${on}.png" class="img-flash" />`;
     }
     return new Handlebars.SafeString(result);
 });
   
-let sortBy = "duedate";
-let sortDirection = "dn";
+let sortBy = "dueDate";
+let sortDirection = 1;
 function setSortOrder(sort, dir) {
     if(sort == sortBy) {
-        sortDirection = sortDirection == "dn" ? "up" : "dn";
+        sortDirection = sortDirection * -1;
     } else {
         sortBy = sort;
         sortDirection = dir;
