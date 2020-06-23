@@ -1,10 +1,16 @@
 class NotesController {
-    constructor(editMode) {
-        this._editMode = editMode;
+    constructor() {
+        this._editMode = false;
+        this._showFinished = false;
+        if(localStorage.getItem('showFinished') === 'true') {
+            this._showFinished = true;
+        }
     }
 
     getAllNotes(sortBy, sortDirection, fnCallback) {
-        $.get("/notes?sort="+sortBy+"&direction="+sortDirection, (data) => {
+        let finishedFilter = "&unfinished=";
+        finishedFilter += !this.showFinished ? 'true' : 'false';
+        $.get("/notes?sort="+sortBy+"&direction="+sortDirection+finishedFilter, (data) => {
             fnCallback(data); 
         });
     }
@@ -41,6 +47,15 @@ class NotesController {
     set editMode(mode) {
         this._editMode = mode; 
     }
+
+    get showFinished() {
+        return this._showFinished;
+    }
+
+    set showFinished(mode) {
+        this._showFinished = mode; 
+        localStorage.setItem('showFinished', mode);
+    }
 }
 
-export const notesController = new NotesController(false);
+export const notesController = new NotesController();

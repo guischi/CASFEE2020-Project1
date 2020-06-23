@@ -34,8 +34,13 @@ class NotesService {
         return await db.update({ _id: id }, { $set: payload }, {});
     }
 
-    async all(sort, dir) {
+    async all(sort, dir, unfinished) {
+        if(unfinished == 'true') return await this.unfinished(sort, dir);
         return await db.cfind({}).sort({ [sort]: dir }).exec();       
+    }
+
+    async unfinished(sort, dir) {
+        return await db.cfind({ finished: 'false' }).sort({ [sort]: dir }).exec();       
     }
 
     async one(id) {

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CASFEE 2020 Project 1 | Notes App</title>
     <link rel="stylesheet" href="./assets/css/app.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Kreon&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital@0;1&display=swap" rel="stylesheet">
 
     <script src="./assets/js/ext/jquery.min.js" defer></script>
     <script src="./assets/js/ext/handlebars.min.js"></script>
@@ -15,21 +15,27 @@
     <script id="note-template" type="text/x-handlebars-template">
         {{#each notes}}  
             <note>
-                <div class="due-date">{{this.dueDate}} ({{this.dueDateFromNow}})</div>
-                <div class="note-title">{{this.title}}<br>Created: {{this.createDate}} ({{this.createDateFromNow}})</div>
-                <div class="importance" data-id="{{this._id}}">
-                    {{#renderImportance this.importance}}
-                    {{/renderImportance}}
+                <div class="due-date">
+                    Due: {{this.dueDate}} {{this.dueDateFromNow}}
                 </div>
+                <div class="main-note-data">
+                    <div>
+                        <h4>{{this.title}}</h4>
+                        {{this.description}}
+                    </div>
+                    <div class="note-importance" data-id="{{this._id}}">
+                        {{#renderImportance this.importance}}
+                        {{/renderImportance}}
+                    </div>
+                </div>
+                
                 <div class="note-edit">
-                    <input type="button" class="btn-edit" data-id="{{this._id}}" value="Edit" />
-                </div>
-
-                <div class="finished">                    
+                    <input type="button" class="btn-edit blue" data-id="{{this._id}}" value="Edit" />
                     <label><input type="checkbox" class="chk-finished" data-id="{{this._id}}" {{#if (isFinished this.finished)}}checked{{/if}} /> Finished {{#if (isFinished this.finished)}}({{this.finishDate}}){{/if}}</label>
                 </div>
-                <div class="description">
-                    <textarea id="txt-description-{{this._id}}">{{this.description}}</textarea>
+                
+                <div class="create-date">
+                    Created: {{this.createDate}} ({{this.createDateFromNow}})
                 </div>
             </note>
         {{/each}}
@@ -57,10 +63,13 @@
             
                     <input type="button" id="btn-filter-importance" class="blue" value="By importance" />
                 </div>
+                <div>
+                    <input type="button" id="btn-filter-finished" class="blue" value="Show finished" />
+                </div>
             </filter>
 
             <notes>
-                No notes have been created, yet. <a href="#" id="lnk-new-note">Create one now</a>.
+                
             </notes>
         </main> 
 

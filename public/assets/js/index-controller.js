@@ -4,8 +4,10 @@ import moment from './ext/moment/moment.js';
  
 themeSwitcher.init();
 
+const filters = [ 'dueDate', 'createDate', 'importance' ];
+
 // handle sorting
-let sortBy = "dueDate";
+let sortBy = filters[0];
 let sortDirection = 1;
 function setSortOrder(sort, dir) {
     if(sort == sortBy) {
@@ -21,32 +23,50 @@ function loadNotes() {
     const render = Handlebars.compile(noteTemplate);
 
     notesController.getAllNotes(sortBy, sortDirection, (data) => {
-        if(data.length > 0) {
-            const notes = [];
-            for(const note of data) {
-                note.dueDateFromNow = moment(note.dueDate).fromNow();
-                note.dueDate = moment(note.dueDate).format('DD.MM.YYYY');
-                note.createDateFromNow = moment(note.createDate).fromNow(); 
-                note.createDate = moment(note.createDate).format('DD.MM.YYYY');               
-                note.finishDate = moment(note.finishDate).fromNow();
-                notes.push(note);        
-            }
-            
-            const dt = { "notes":  notes };
-            const noteData = render(dt);
-            
-            document.querySelector('notes').innerHTML = "";
-            document.querySelector('notes').innerHTML += noteData;
+        
 
-            initNotesUI();
+        const notes = [];
+        for(const note of data) {
+            if(moment(note.dueDate).format('YYYY') == '2999') {
+                note.dueDate = 'Whenever there is time';
+            } else {
+                note.dueDateFromNow = `(${moment(note.dueDate).fromNow()})`;
+                note.dueDate = moment(note.dueDate).format('DD.MM.YYYY');
+            }
+            note.createDateFromNow = moment(note.createDate).fromNow(); 
+            note.createDate = moment(note.createDate).format('DD.MM.YYYY');               
+            note.finishDate = moment(note.finishDate).fromNow();
+            notes.push(note);        
         }
+        
+        const dt = { "notes":  notes };
+        const noteData = render(dt);
+        
+        document.querySelector('notes').innerHTML = "";
+        document.querySelector('notes').innerHTML += noteData;
+
+        if(data.length == 0) {
+            document.querySelector('notes').innerHTML = 'No notes have been created, yet. <a href="#" id="lnk-new-note">Create one now</a>.';
+            document.querySelector("#lnk-new-note").addEventListener("click", (e) => { 
+                e.preventDefault();
+                notesController.editMode = false;
+                showAddNoteForm();
+            });
+        }
+
+        initNotesUI();
+        activateShowFinishedBtn(); 
     });
 
-    document.querySelector('#btn-filter-dueDate').value = `By due date`;
-    document.querySelector('#btn-filter-createDate').value = `By create date`;
-    document.querySelector('#btn-filter-importance').value = `By importance`;
+    for(const f of filters) {
+        let btn = document.querySelector('#btn-filter-' + f);
+        btn.value = `By ${f.replace("D", " d")}`;
+        btn.classList.remove('active');
+    }
     const direction = sortDirection == 1 ? '↑' : '↓';
-    document.querySelector('#btn-filter-'+sortBy).value = `By ${sortBy.replace("D", " d")} ${direction}`;
+    const btn = document.querySelector('#btn-filter-'+sortBy);
+    btn.value = `By ${sortBy.replace("D", " d")} ${direction}`;
+    btn.classList.add('active');
 }
 
 function saveNote() {
@@ -92,6 +112,14 @@ function initNotesUI() {
     );
 }
 
+function activateShowFinishedBtn() {
+    const btn = document.querySelector("#btn-filter-finished");
+    btn.classList.remove('active');
+    if(notesController.showFinished) {
+        btn.classList.add('active');
+    }   
+}
+
 function clearAddNoteForm() {
     document.querySelector("#txt-title").value = "";
     document.querySelector("#txt-description").value = "";
@@ -130,13 +158,12 @@ document.querySelector("#btn-filter-importance").addEventListener("click", () =>
     loadNotes();
 });
 
-document.querySelector("#btn-new-note").addEventListener("click", () => { 
-    notesController.editMode = false;
-    showAddNoteForm();
+document.querySelector("#btn-filter-finished").addEventListener("click", (e) => { 
+    notesController.showFinished = !notesController.showFinished;    
+    loadNotes();
 });
 
-document.querySelector("#lnk-new-note").addEventListener("click", (e) => { 
-    e.preventDefault();
+document.querySelector("#btn-new-note").addEventListener("click", () => { 
     notesController.editMode = false;
     showAddNoteForm();
 });

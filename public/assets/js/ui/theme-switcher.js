@@ -17,11 +17,11 @@ class ThemeSwitcher {
         if(on) {
             document.querySelector("body").classList.add("dark");
             document.querySelector("addnote").classList.add("dark");
-            document.querySelectorAll("a").forEach(lnk => lnk.classList.add("dark"));
+            //document.querySelectorAll("a").forEach(lnk => lnk.classList.add("dark"));
         } else {
             document.querySelector("body").classList.remove("dark");
             document.querySelector("addnote").classList.remove("dark");
-            document.querySelectorAll("a").forEach(lnk => lnk.classList.remove("dark"));
+            //document.querySelectorAll("a").forEach(lnk => lnk.classList.remove("dark"));
         }
         localStorage.setItem('darkTheme', on);
     }    
