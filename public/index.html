@@ -14,18 +14,18 @@
     
     <script id="note-template" type="text/x-handlebars-template">
         {{#each notes}}  
-            <note>
+            <note {{#if (isFinished this.finished)}}class="finished"{{/if}}>
                 <div class="due-date">
                     Due: {{this.dueDate}} {{this.dueDateFromNow}}
                 </div>
                 <div class="main-note-data">
                     <div>
                         <h4>{{this.title}}</h4>
-                        {{this.description}}
+                        {{{this.description}}}
                     </div>
                     <div class="note-importance" data-id="{{this._id}}">
                         {{#renderImportance this.importance}}
-                        {{/renderImportance}}
+                        {{/renderImportance}}                        
                     </div>
                 </div>
                 
@@ -64,7 +64,7 @@
                     <input type="button" id="btn-filter-importance" class="blue" value="By importance" />
                 </div>
                 <div>
-                    <input type="button" id="btn-filter-finished" class="blue" value="Show finished" />
+                    <input type="button" id="btn-filter-finished" class="blue active" value="Hide finished" />
                 </div>
             </filter>
 
@@ -103,6 +103,7 @@
                         <img src="assets/img/flash-off.png" class="img-flash pointer" id="importance-3" data-id="3" />
                         <img src="assets/img/flash-off.png" class="img-flash pointer" id="importance-4" data-id="4" />
                         <img src="assets/img/flash-off.png" class="img-flash pointer" id="importance-5" data-id="5" />
+                        <img src="assets/img/reset.png" class="img-flash pointer" id="importance-5" data-id="0" />
                     </div>
                     <div>
                         <label for="lbl-due-date">Due date</label>

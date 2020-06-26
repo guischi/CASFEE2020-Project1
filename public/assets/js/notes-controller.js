@@ -1,8 +1,10 @@
+import {localStorageController} from './helpers/local-storage.js';
+
 class NotesController {
     constructor() {
         this._editMode = false;
         this._showFinished = false;
-        if(localStorage.getItem('showFinished') === 'true') {
+        if(localStorageController.getItem('showFinished') === 'true') {
             this._showFinished = true;
         }
     }
@@ -54,7 +56,7 @@ class NotesController {
 
     set showFinished(mode) {
         this._showFinished = mode; 
-        localStorage.setItem('showFinished', mode);
+        localStorageController.setItem('showFinished', mode);
     }
 }
 

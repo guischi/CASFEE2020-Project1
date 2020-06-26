@@ -18,6 +18,7 @@ function setSortOrder(sort, dir) {
     }
 }
 
+// load notes
 function loadNotes() {
     const noteTemplate = document.querySelector('#note-template').innerHTML;
     const render = Handlebars.compile(noteTemplate);
@@ -36,6 +37,7 @@ function loadNotes() {
             note.createDateFromNow = moment(note.createDate).fromNow(); 
             note.createDate = moment(note.createDate).format('DD.MM.YYYY');               
             note.finishDate = moment(note.finishDate).fromNow();
+            note.description = note.description.replace(/(?:\r\n|\r|\n)/g, '<br>');
             notes.push(note);        
         }
         
@@ -55,7 +57,7 @@ function loadNotes() {
         }
 
         initNotesUI();
-        activateShowFinishedBtn(); 
+        activateHideFinishedBtn(); 
     });
 
     for(const f of filters) {
@@ -69,6 +71,7 @@ function loadNotes() {
     btn.classList.add('active');
 }
 
+// save note
 function saveNote() {
     let note = {
         title : document.querySelector('input[name="title"]').value,
@@ -83,11 +86,12 @@ function saveNote() {
 
     notesController.saveNote(note, (data) => {
         showAddNoteForm();
-        clearAddNoteForm();
+        resetAddNoteForm();
         loadNotes();
     });
 }
 
+// init ui controls of notes (edit button, finished checkbox)
 function initNotesUI() {
     document.querySelectorAll(".btn-edit").forEach(btnEdit => 
         btnEdit.addEventListener("click", (e) => {
@@ -112,26 +116,30 @@ function initNotesUI() {
     );
 }
 
-function activateShowFinishedBtn() {
+// set display state for "hide finished" button
+function activateHideFinishedBtn() {
     const btn = document.querySelector("#btn-filter-finished");
     btn.classList.remove('active');
-    if(notesController.showFinished) {
+    if(!notesController.showFinished) {
         btn.classList.add('active');
     }   
 }
 
-function clearAddNoteForm() {
+// reset the note form (after save)
+function resetAddNoteForm() {
     document.querySelector("#txt-title").value = "";
     document.querySelector("#txt-description").value = "";
     document.querySelector("#dat-due-date").value = "";
     setImportance(0);
 }
 
+// show/hide note form
 function showAddNoteForm() {
     document.querySelector("darkener").classList.toggle("show");
     document.querySelector("addnote").classList.toggle("show");
 }
 
+// set note importance
 function setImportance(rating) {
     for(let i=1;i<=5;i++) {
         if(i<=rating) {
@@ -143,6 +151,7 @@ function setImportance(rating) {
     document.querySelector('input[name="importance"]').value = rating;
 }
 
+// ui listeners
 document.querySelector("#btn-filter-dueDate").addEventListener("click", () => { 
     setSortOrder("dueDate", 1);
     loadNotes();
@@ -186,7 +195,7 @@ document.querySelector("#btn-save-note").addEventListener("click", () => {
    saveNote();
 });
 
-// init application
+// init application and load all notes
 document.addEventListener("DOMContentLoaded", function(event) {
     console.log("DOM fully loaded and parsed");
     loadNotes();

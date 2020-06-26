@@ -8,8 +8,7 @@ class Note{
         this.description = description;
         this.finished = 'false';
         this.dueDate = dueDate;
-        this.finishDate = new Date('2999-12-31').toISOString();        
-        this.state = "OK";
+        this.finishDate = new Date('2999-12-31').toISOString();     
     }
 
     setCreateDate(date) {
@@ -19,8 +18,7 @@ class Note{
 
 class NotesService {
     async add(payload) {
-        payload.dueDate = new Date(payload.dueDate);
-        if(payload.dueDate == "Invalid Date") payload.dueDate = new Date("2999-12-31");
+        payload.dueDate = this.setDueDate(payload.dueDate);
 
         let note = new Note(payload.title, payload.dueDate, payload.importance, payload.description);
         note.setCreateDate(new Date());
@@ -29,8 +27,7 @@ class NotesService {
     }
 
     async edit(id, payload) {
-        payload.dueDate = new Date(payload.dueDate);
-        if(payload.dueDate == "Invalid Date") payload.dueDate = new Date("2999-12-31");
+        payload.dueDate = this.setDueDate(payload.dueDate);
         return await db.update({ _id: id }, { $set: payload }, {});
     }
 
@@ -45,6 +42,12 @@ class NotesService {
 
     async one(id) {
         return await db.findOne({ _id: id });       
+    }
+
+    setDueDate(date) {
+        date = new Date(date);
+        if(date == "Invalid Date") date = new Date("2999-12-31");
+        return date;
     }
 }
 

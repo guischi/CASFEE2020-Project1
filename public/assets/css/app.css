@@ -7,48 +7,57 @@
     --dark-text: #f7f7f7;
     --dark-bg: #1b262c;
 
-    /* Default mode */
+    /* Default setting */
     --text-color: var(--light-text);
     --bg-color: var(--light-bg);
 }
 
-#theme-switch {
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    clip: rect(1px, 1px, 1px, 1px);
-}
-
-label[for="theme-switch"] {
-    cursor: pointer;
-}
-
 body {
+    font-family: 'Raleway', sans-serif;
     background: var(--bg-color);
     color: var(--text-color);
     display: flex;
     justify-content: center;
-    margin:0;
-    font-family: 'Raleway', sans-serif;
+    margin:0;    
 }
 
 a {
     color: #888888;
 }
 
+input[type="text"], textarea {
+    font-family: 'Raleway', sans-serif;
+    border: 0;
+    padding:6px;
+    width:100%;
+    margin-bottom: 7px;    
+}
+
+textarea {
+    min-height: 80px;
+}
+
+input[type="button"], button {
+    border:none;
+    padding:10px;
+    min-width: 100px;
+    cursor: pointer;
+}
+
+/* main container */
 main {
     width: 1024px;
-    /* border: solid 1px red; */
     margin:40px;
 }
 
+/* header container */
 header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 40px;
 }
 
+/* filter elements*/
 filter {
     display: flex;
     justify-content: space-between;
@@ -56,20 +65,17 @@ filter {
     border-bottom: solid 1px #68686869;
 }
 
-.img-flash {
-    width:30px;    
-}
-
-.pointer {
-    cursor: pointer;
-}
-
+/* note component */
 note {
     display:block;
     margin-bottom: 20px;
     padding: 10px;
     background:hsla(0, 0%, 100%, 0.3);
     box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.4);
+}
+
+.finished {
+    opacity: 0.4;
 }
 
 .main-note-data {
@@ -92,35 +98,7 @@ note {
     text-align: right;
 }
 
-input[type="text"], textarea {
-    border: 0;
-    padding:6px;
-    width:100%;
-    margin-bottom: 7px;
-    font-family: 'Raleway', sans-serif;
-}
-
-textarea {
-    min-height: 80px;
-}
-
-input[type="button"], button {
-    border:none;
-    padding:10px;
-    min-width: 100px;
-    cursor: pointer;
-}
-
-darkener {
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height: 100%;
-    background-color: hsla(0, 0%, 0%, 0.7);
-    display: none;
-}
-
+/* add note form */
 addnote {
     position: absolute;
     top:20vh;
@@ -151,6 +129,17 @@ addnote {
     text-align: center;
 }
 
+/* darkener div for note form overlay */
+darkener {
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height: 100%;
+    background-color: hsla(0, 0%, 0%, 0.7);
+    display: none;
+}
+
 .due-date, .create-date {
     font-size: 70%;    
 }
@@ -159,6 +148,7 @@ addnote {
     font-style: italic;
 }
 
+/* styling */
 .green {
     background: rgb(46, 148, 122);
     color: var(--dark-text);
@@ -171,7 +161,7 @@ addnote {
 }
 
 .active {
-    background: rgb(12, 117, 187);
+    background: rgb(8, 93, 150);
 }
 
 .red {
@@ -179,11 +169,32 @@ addnote {
     color: var(--dark-text);
 }
 
+.dark {
+    background: var(--dark-bg);
+    color: var(--dark-text);
+}
+
 .show {
     display:block;
 }
 
-.dark {
-    background: var(--dark-bg);
-    color: var(--dark-text);
+.img-flash {
+    width:30px;    
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+/* theme switcher */
+#theme-switch {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+label[for="theme-switch"] {
+    cursor: pointer;
 }

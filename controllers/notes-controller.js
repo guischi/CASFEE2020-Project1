@@ -1,7 +1,6 @@
 import {notesService} from '../services/notes-service';
 
 class NotesController {
-
     async getAllNotes(req, res) {
         res.json(await notesService.all(req.query.sort, req.query.direction, req.query.unfinished));
     }
