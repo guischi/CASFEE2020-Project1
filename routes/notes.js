@@ -1,9 +1,11 @@
 import express from 'express';
-
-const router = express.Router();
 import {notesController} from '../controllers/notes-controller';
 
-router.get("/", notesController.getNotes.bind(notesController));
+const router = express.Router();
+
+router.get("/", notesController.getAllNotes.bind(notesController));
+router.get("/:id", notesController.getOneNote.bind(notesController));
 router.post("/", notesController.addNote.bind(notesController));
+router.post("/:id", notesController.editNote.bind(notesController));
 
 export const rtNotes = router;

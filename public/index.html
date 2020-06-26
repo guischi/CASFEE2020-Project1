@@ -5,59 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CASFEE 2020 Project 1 | Notes App</title>
     <link rel="stylesheet" href="./assets/css/app.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital@0;1&display=swap" rel="stylesheet">
 
     <script src="./assets/js/ext/jquery.min.js" defer></script>
     <script src="./assets/js/ext/handlebars.min.js"></script>
+    <script src="./assets/js/helpers/hbs.js"></script>
     <script src="./assets/js/index-controller.js" type="module" defer></script>
     
     <script id="note-template" type="text/x-handlebars-template">
         {{#each notes}}  
-            <note>
-                <div class="due-date">{{this.dueDate}}</div>
-                <div class="note-title">{{this.title}}<br>Created: {{this.noteDate}}</div>
-                <div class="importance" data-id="{{this._id}}">
-                    {{#renderImportance this.importance}}
-                    {{/renderImportance}}
+            <note {{#if (isFinished this.finished)}}class="finished"{{/if}}>
+                <div class="due-date">
+                    Due: {{this.dueDate}} {{this.dueDateFromNow}}
                 </div>
+                <div class="main-note-data">
+                    <div>
+                        <h4>{{this.title}}</h4>
+                        {{{this.description}}}
+                    </div>
+                    <div class="note-importance" data-id="{{this._id}}">
+                        {{#renderImportance this.importance}}
+                        {{/renderImportance}}                        
+                    </div>
+                </div>
+                
                 <div class="note-edit">
-                    <input type="button" class="btn-edit" data-id="{{this._id}}" value="Edit" />
+                    <input type="button" class="btn-edit blue" data-id="{{this._id}}" value="Edit" />
+                    <label><input type="checkbox" class="chk-finished" data-id="{{this._id}}" {{#if (isFinished this.finished)}}checked{{/if}} /> Finished {{#if (isFinished this.finished)}}({{this.finishDate}}){{/if}}</label>
                 </div>
-
-                <div class="finished">                    
-                    <label><input type="checkbox" class="chk-finished" data-id="{{this._id}}" value="1" /> Finished [{{this.finishDate}}]</label>
-                </div>
-                <div class="description">
-                    <textarea id="txt-description-{{this._id}}">{{this.description}}</textarea>
+                
+                <div class="create-date">
+                    Created: {{this.createDate}} ({{this.createDateFromNow}})
                 </div>
             </note>
         {{/each}}
     </script>
 
-    <script>
-        
-    </script>
 </head>
     <body>
+        <input type="checkbox" id="theme-switch">    
         <main>
             <header>
                 <div>
-                    <input type="button" id="btn-new-note" value="Neue Notiz">
+                    <input type="button" id="btn-new-note" class="green" value="Add new note">
                 </div>
                 <div>
-                    <select id="sel-theme">
-                        <option value="0">Bright Theme</option>
-                        <option value="1">Dark Theme</option>
-                    </select>
+                    <label for="theme-switch" data-id="theme-switch">Toggle dark mode</label>
                 </div>
             </header>
                 
             <filter>
                 <div class="btn-filter">
-                    <input type="button" id="btn-filter-duedate" value="By due date&#x2193;" />
+                    Filter:&nbsp;&nbsp;
+                    <input type="button" id="btn-filter-dueDate" class="blue" value="By dueDate" />
                 
-                    <input type="button" id="btn-filter-created" value="By created date" />
+                    <input type="button" id="btn-filter-createDate" class="blue" value="By createDate" />
             
-                    <input type="button" id="btn-filter-importance" value="By importance" />
+                    <input type="button" id="btn-filter-importance" class="blue" value="By importance" />
+                </div>
+                <div>
+                    <input type="button" id="btn-filter-finished" class="blue active" value="Hide finished" />
                 </div>
             </filter>
 
@@ -69,43 +76,48 @@
         <darkener></darkener>
 
         <addnote>
-            <addnoteform>
+            <div id="addform">
                 <div>
-                    <label for="lbl-title">Titel</label>
-                </div>
-                <div>
-                    <input type="text" id="txt-title" name="title" />
-                </div>
-                <div>
-                    <label for="lbl-description">Beschreibung</label>
-                </div>
-                <div>
-                    <textarea id="txt-description" name="description"></textarea>
-                </div>
-                <div>
-                    <label for="lbl-importance">Wichtigkeit</label>
-                </div>
-                <div class="importance">
-                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-1" data-id="1" />
-                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-2" data-id="2" />
-                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-3" data-id="3" />
-                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-4" data-id="4" />
-                    <img src="assets/img/flash-off.png" class="img-flash" id="new-importance-5" data-id="5" />
+                    <input type="hidden" name="id" />
+                    <div>
+                        <label for="lbl-title">Title</label>
+                    </div>
+                    <div>
+                        <input type="text" id="txt-title" name="title" />
+                    </div>
+                    <div>
+                        <label for="lbl-description">Description</label>
+                    </div>
+                    <div>
+                        <textarea id="txt-description" name="description"></textarea>
+                    </div>
                 </div>
                 <div>
-                    <label for="lbl-due-date">Erledigen bis</label>
+                    <div>
+                        <label for="lbl-importance">Importance</label>
+                    </div>
+                    <div class="importance">
+                        <input type="hidden" name="importance" value="0" />
+                        <img src="assets/img/flash-off.png" class="img-flash pointer" id="importance-1" data-id="1" />
+                        <img src="assets/img/flash-off.png" class="img-flash pointer" id="importance-2" data-id="2" />
+                        <img src="assets/img/flash-off.png" class="img-flash pointer" id="importance-3" data-id="3" />
+                        <img src="assets/img/flash-off.png" class="img-flash pointer" id="importance-4" data-id="4" />
+                        <img src="assets/img/flash-off.png" class="img-flash pointer" id="importance-5" data-id="5" />
+                        <img src="assets/img/reset.png" class="img-flash pointer" id="importance-5" data-id="0" />
+                    </div>
+                    <div>
+                        <label for="lbl-due-date">Due date</label>
+                    </div>
+                    <div>
+                        <input type="date" id="dat-due-date" name="duedate" />
+                    </div>                    
                 </div>
-                <div>
-                    <input type="date" id="dat-due-date" name="duedate" />
-                </div>
-                <div>
-                    <button id="btn-save-note">Speichern</button>
-                </div>
-                <div>
-                    <button id="btn-cancel">Abbrechen</button>
-                </div>
-            </addnoteform>
+            </div>
+            <div id="addform-buttons">
+                <button id="btn-save-note" class="green">Save</button>
+                <button id="btn-cancel" class="red">Cancel</button>
+            </div>
         </addnote>
-        
+      
     </body>
 </html>
